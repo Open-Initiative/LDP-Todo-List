@@ -26682,7 +26682,7 @@ else {
  * (C) 2011, Charlie Robbins
  *
  */
- 
+
 var fs = require('fs'),
     path = require('path');
 
@@ -26691,7 +26691,7 @@ var fs = require('fs'),
 // #### @pmodule {Module} Parent module to read from.
 // #### @options {Object|Array|string} **Optional** Options used when exposing properties.
 // #### @arguments {string...} **Optional** Specified properties to expose.
-// Exposes properties from the package.json file for the parent module on 
+// Exposes properties from the package.json file for the parent module on
 // it's exports. Valid usage:
 //
 // `require('pkginfo')()`
@@ -26706,7 +26706,7 @@ var pkginfo = module.exports = function (pmodule, options) {
   var args = [].slice.call(arguments, 2).filter(function (arg) {
     return typeof arg === 'string';
   });
-  
+
   //
   // **Parse variable arguments**
   //
@@ -26726,35 +26726,35 @@ var pkginfo = module.exports = function (pmodule, options) {
     //
     options = { include: [options] };
   }
-  
+
   //
   // **Setup default options**
   //
   options = options || {};
-  
+
   // ensure that includes have been defined
   options.include = options.include || [];
-  
+
   if (args.length > 0) {
     //
     // If additional string arguments have been passed in
-    // then add them to the properties to expose on the 
-    // parent module. 
+    // then add them to the properties to expose on the
+    // parent module.
     //
     options.include = options.include.concat(args);
   }
-  
+
   var pkg = pkginfo.read(pmodule, options.dir).package;
   Object.keys(pkg).forEach(function (key) {
     if (options.include.length > 0 && !~options.include.indexOf(key)) {
       return;
     }
-    
+
     if (!pmodule.exports[key]) {
       pmodule.exports[key] = pkg[key];
     }
   });
-  
+
   return pkginfo;
 };
 
@@ -26763,26 +26763,26 @@ var pkginfo = module.exports = function (pmodule, options) {
 // #### @pmodule {Module} Parent module to read from.
 // #### @dir {string} **Optional** Directory to start search from.
 // Searches up the directory tree from `dir` until it finds a directory
-// which contains a `package.json` file. 
+// which contains a `package.json` file.
 //
 pkginfo.find = function (pmodule, dir) {
   if (! dir) {
     dir = path.dirname(pmodule.filename);
   }
-  
+
   var files = fs.readdirSync(dir);
-  
+
   if (~files.indexOf('package.json')) {
     return path.join(dir, 'package.json');
   }
-  
+
   if (dir === '/') {
     throw new Error('Could not find package.json up from: ' + dir);
   }
   else if (!dir || dir === '.') {
     throw new Error('Cannot find package.json from unspecified directory');
   }
-  
+
   return pkginfo.find(pmodule, path.dirname(dir));
 };
 
@@ -26793,13 +26793,13 @@ pkginfo.find = function (pmodule, dir) {
 // Searches up the directory tree from `dir` until it finds a directory
 // which contains a `package.json` file and returns the package information.
 //
-pkginfo.read = function (pmodule, dir) { 
+pkginfo.read = function (pmodule, dir) {
   dir = pkginfo.find(pmodule, dir);
-  
+
   var data = fs.readFileSync(dir).toString();
-      
+
   return {
-    dir: dir, 
+    dir: dir,
     package: JSON.parse(data)
   };
 };
@@ -29493,7 +29493,7 @@ var LdpStore = function (rdf, options) {
         if ('content-type' in headers && headers['content-type'] in self.parsers) {
           contentType = headers['content-type'];
         }
-        
+
         // and override if set in options
         if ('forceContentType' in options && options.forceContentType in self.parsers) {
           contentType = options.forceContentType;
@@ -29552,7 +29552,7 @@ var LdpStore = function (rdf, options) {
     if ('headers' in options && options.headers) {
       $.extend(headers, options.headers);
     }
-    
+
     self.serializers[contentType](graph, function (data, error) {
       // serializer error
       if (error) {
@@ -30234,13 +30234,13 @@ module.exports = function (rdf) {
  * the following license. By obtaining, using and/or copying this work,
  * you (the licensee) agree that you have read, understood, and will
  * comply with the following terms and conditions.
- * 
+ *
  * Permission to copy, modify, and distribute this software and its
  * documentation, with or without modification, for any purpose and
  * without fee or royalty is hereby granted, provided that you include
  * the following on ALL copies of the software and documentation or
  * portions thereof, including modifications:
- * 
+ *
  * 1. The full text of this NOTICE in a location viewable to users of
  * the redistributed or derivative work.
  * 2. Any pre-existing intellectual property disclaimers, notices, or terms and
@@ -30250,18 +30250,18 @@ module.exports = function (rdf) {
  * 3. Notice of any changes or modifications to the files, including the
  * date changes were made. (We recommend you provide URIs to the location
  * from which the code is derived.)
- * 
+ *
  * THIS SOFTWARE AND DOCUMENTATION IS PROVIDED "AS IS," AND COPYRIGHT
  * HOLDERS MAKE NO REPRESENTATIONS OR WARRANTIES, EXPRESS OR IMPLIED,
  * INCLUDING BUT NOT LIMITED TO, WARRANTIES OF MERCHANTABILITY OR FITNESS
  * FOR ANY PARTICULAR PURPOSE OR THAT THE USE OF THE SOFTWARE OR
  * DOCUMENTATION WILL NOT INFRINGE ANY THIRD PARTY PATENTS, COPYRIGHTS,
  * TRADEMARKS OR OTHER RIGHTS.
- * 
+ *
  * COPYRIGHT HOLDERS WILL NOT BE LIABLE FOR ANY DIRECT, INDIRECT, SPECIAL
  * OR CONSEQUENTIAL DAMAGES ARISING OUT OF ANY USE OF THE SOFTWARE OR
  * DOCUMENTATION.
- * 
+ *
  * The name and trademarks of copyright holders may NOT be used in
  * advertising or publicity pertaining to the software without specific,
  * written prior permission. Title to copyright in this software and any
@@ -30270,22 +30270,22 @@ module.exports = function (rdf) {
  */
 /**
  * @class Class defining an RDFParser resource object tied to an RDFStore
- *  
+ *
  * @author David Sheets <dsheets@mit.edu>
  * @version 0.1
- * 
+ *
  * @constructor
  * @param {RDFStore} store An RDFStore object
  */
 
 var RdfLibParser = function(store){
     var RDFParser = {};
-    
+
     /** Standard namespaces that we know how to handle @final
      *  @member RDFParser
      */
     RDFParser.ns = {'RDF': "http://www.w3.org/1999/02/22-rdf-syntax-ns#", 'RDFS': "http://www.w3.org/2000/01/rdf-schema#"};
-    
+
     /** DOM Level 2 node type magic numbers @final
      *  @member RDFParser
      */
@@ -30302,20 +30302,20 @@ var RdfLibParser = function(store){
      *
      * @private
      */
-    
+
     this.frameFactory = function(parser, parent, element){
-        return {'NODE': 1, 'ARC': 2, 'parent': parent, 'parser': parser, 'store': parser.store, 'element': element, 
+        return {'NODE': 1, 'ARC': 2, 'parent': parent, 'parser': parser, 'store': parser.store, 'element': element,
            'lastChild': 0, 'base': null, 'lang': null, 'node': null, 'nodeType': null, 'listIndex': 1, 'rdfid': null, 'datatype': null, 'collection': false, /** Terminate the frame and notify the store that we're done */
            'terminateFrame': function(){
             if (this.collection){
-                
+
                 this.node.close();
             }
         }
         , /** Add a symbol of a certain type to the this frame */'addSymbol': function(type, uri){
             uri = uriJoin(uri, this.base);
             this.node = this.store.sym(uri);
-            
+
             this.nodeType = type;
         }
         , /** Load any constructed triples into the store */'loadTriple': function(){
@@ -30331,19 +30331,19 @@ var RdfLibParser = function(store){
                 this.store.add(triple, this.store.sym(RDFParser.ns.RDF + "type"), this.store.sym(RDFParser.ns.RDF + "Statement"), this.parser.why);
                 this.store.add(triple, this.store.sym(RDFParser.ns.RDF + "subject"), this.parent.parent.node, this.parser.why);
                 this.store.add(triple, this.store.sym(RDFParser.ns.RDF + "predicate"), this.parent.node, this.parser.why);
-                
+
                 this.store.add(triple, this.store.sym(RDFParser.ns.RDF + "object"), this.node, this.parser.why);
             }
         }
         , /** Check if it's OK to load a triple */'isTripleToLoad': function(){
-            
-            return (this.parent != null && this.parent.parent != null && this.nodeType === this.NODE && this.parent.nodeType === 
+
+            return (this.parent != null && this.parent.parent != null && this.nodeType === this.NODE && this.parent.nodeType ===
                this.ARC && this.parent.parent.nodeType === this.NODE);
         }
         , /** Add a symbolic node to this frame */'addNode': function(uri){
             this.addSymbol(this.NODE, uri);
             if (this.isTripleToLoad()){
-                
+
                 this.loadTriple();
             }
         }
@@ -30352,12 +30352,12 @@ var RdfLibParser = function(store){
             this.node = this.store.collection();
             this.collection = true;
             if (this.isTripleToLoad()){
-                
+
                 this.loadTriple();
             }
         }
         , /** Add a collection arc to this frame */'addCollectionArc': function(){
-            
+
             this.nodeType = this.ARC;
         }
         , /** Add a bnode to this frame */'addBNode': function(id){
@@ -30374,7 +30374,7 @@ var RdfLibParser = function(store){
             }
             this.nodeType = this.NODE;
             if (this.isTripleToLoad()){
-                
+
                 this.loadTriple();
             }
         }
@@ -30383,7 +30383,7 @@ var RdfLibParser = function(store){
                 uri = RDFParser.ns.RDF + "_" + this.parent.listIndex;
                 this.parent.listIndex++;
             }
-            
+
             this.addSymbol(this.ARC, uri);
         }
         , /** Add a literal to this frame */'addLiteral': function(value){
@@ -30400,7 +30400,7 @@ var RdfLibParser = function(store){
         }
         };
     };
-    
+
     //from the OpenLayers source .. needed to get around IE problems.
     this.getAttributeNodeNS = function(node, uri, name){
         var attributeNode = null;
@@ -30423,22 +30423,22 @@ var RdfLibParser = function(store){
         }
         return attributeNode;
     };
-    
-    
+
+
     /** Our triple store reference @private */
-    
+
     this.store = store;/** Our identified blank nodes @private */
     this.bnodes = {};/** A context for context-aware stores @private */
     this.why = null;/** Reification flag */
     this.reify = false;
-    
+
     /**
      * Build our initial scope frame and parse the DOM into triples
      * @param {DOMTree} document The DOM to parse
-     * @param {String} base The base URL to use 
+     * @param {String} base The base URL to use
      * @param {Object} why The context to which this resource belongs
      */
-    
+
     this.parse = function(document, base, why){
         var children = document.childNodes;// clean up for the next run
         this.cleanParser();// figure out the root element
@@ -30466,7 +30466,7 @@ var RdfLibParser = function(store){
         this.parseDOM(this.buildFrame(f, root));
         return true;
     };
-    
+
     this.parseDOM = function(frame){
          // a DOM utility function used in parsing
         var rdfid;
@@ -30513,7 +30513,7 @@ var RdfLibParser = function(store){
                     var about = this.getAttributeNodeNS(dom, RDFParser.ns.RDF, "about");
                     rdfid = this.getAttributeNodeNS(dom, RDFParser.ns.RDF, "ID");
                     if (about && rdfid){
-                        throw new Error("RDFParser: " + dom.nodeName + " has both rdf:id and rdf:about." + 
+                        throw new Error("RDFParser: " + dom.nodeName + " has both rdf:id and rdf:about." +
                            " Halting. Only one of these" + " properties may be specified on a" + " node.");
                     }
                     if (!about && rdfid){
@@ -30540,7 +30540,7 @@ var RdfLibParser = function(store){
                         rdftype = {'nodeValue': elementURI(dom)};
                     }
                     if (rdftype != null){
-                        this.store.add(frame.node, this.store.sym(RDFParser.ns.RDF + "type"), this.store.sym(uriJoin(rdftype.nodeValue, 
+                        this.store.add(frame.node, this.store.sym(RDFParser.ns.RDF + "type"), this.store.sym(uriJoin(rdftype.nodeValue,
                            frame.base)), this.why);
                         if (rdftype.nodeName){
                             dom.removeAttributeNode(rdftype);
@@ -30548,7 +30548,7 @@ var RdfLibParser = function(store){
                     }
                     // Property Attributes
                     for (var x = attrs.length - 1;x >= 0;x--){
-                        this.store.add(frame.node, this.store.sym(elementURI(attrs[x])), this.store.literal(attrs[x].nodeValue, 
+                        this.store.add(frame.node, this.store.sym(elementURI(attrs[x])), this.store.literal(attrs[x].nodeValue,
                            frame.lang), this.why);
                     }
                 }
@@ -30640,10 +30640,10 @@ var RdfLibParser = function(store){
                     dig = true;
                 }
                 else if ((candidate.nodeType !== RDFParser.nodeType.ELEMENT &&
-                        candidate.nodeType !== RDFParser.nodeType.TEXT && 
+                        candidate.nodeType !== RDFParser.nodeType.TEXT &&
                         candidate.nodeType !== RDFParser.nodeType.CDATA_SECTION) ||
                     ((candidate.nodeType === RDFParser.nodeType.TEXT ||
-                        candidate.nodeType === RDFParser.nodeType.CDATA_SECTION) && 
+                        candidate.nodeType === RDFParser.nodeType.CDATA_SECTION) &&
                         dom.childNodes.length !== 1)){
                     frame.lastChild++;
                 }
@@ -30656,7 +30656,7 @@ var RdfLibParser = function(store){
             }
         }// while
     };
-    
+
     /**
      * Cleans out state from a previous parse run
      * @private
@@ -30665,9 +30665,9 @@ var RdfLibParser = function(store){
         this.bnodes = {};
         this.why = null;
     };
-    
+
     /**
-     * Builds scope frame 
+     * Builds scope frame
      * @private
      */
     this.buildFrame = function(parent, element){
@@ -31742,9 +31742,9 @@ module.exports = utils.mixin;
 },{}],64:[function(require,module,exports){
 function DOMParser(options){
 	this.options = options ||{locator:{}};
-	
+
 }
-DOMParser.prototype.parseFromString = function(source,mimeType){	
+DOMParser.prototype.parseFromString = function(source,mimeType){
 	var options = this.options;
 	var sax =  new XMLReader();
 	var domBuilder = options.domBuilder || new DOMHandler();//contentHandler and LexicalHandler
@@ -31755,7 +31755,7 @@ DOMParser.prototype.parseFromString = function(source,mimeType){
 	if(locator){
 		domBuilder.setDocumentLocator(locator)
 	}
-	
+
 	sax.errorHandler = buildErrorHandler(errorHandler,domBuilder,locator);
 	sax.domBuilder = options.domBuilder || domBuilder;
 	if(/\/x?html?$/.test(mimeType)){
@@ -31806,8 +31806,8 @@ function buildErrorHandler(errorImpl,domBuilder,locator){
 /**
  * +ContentHandler+ErrorHandler
  * +LexicalHandler+EntityResolver2
- * -DeclHandler-DTDHandler 
- * 
+ * -DeclHandler-DTDHandler
+ *
  * DefaultHandler:EntityResolver, DTDHandler, ContentHandler, ErrorHandler
  * DefaultHandler2:DefaultHandler,LexicalHandler, DeclHandler, EntityResolver2
  * @link http://www.saxproject.org/apidoc/org/xml/sax/helpers/DefaultHandler.html
@@ -31822,7 +31822,7 @@ function position(locator,node){
 /**
  * @see org.xml.sax.ContentHandler#startDocument
  * @link http://www.saxproject.org/apidoc/org/xml/sax/ContentHandler.html
- */ 
+ */
 DOMHandler.prototype = {
 	startDocument : function() {
     	this.document = new DOMImplementation().createDocument(null, null, null);
@@ -31836,7 +31836,7 @@ DOMHandler.prototype = {
 	    var len = attrs.length;
 	    appendElement(this, el);
 	    this.currentElement = el;
-	    
+
 		this.locator && position(this.locator,el)
 	    for (var i = 0 ; i < len; i++) {
 	        var namespaceURI = attrs.getURI(i);
@@ -31897,7 +31897,7 @@ DOMHandler.prototype = {
 	    this.locator && position(this.locator,comm)
 	    appendElement(this, comm);
 	},
-	
+
 	startCDATA:function() {
 	    //used in characters() methods
 	    this.cdata = true;
@@ -31905,7 +31905,7 @@ DOMHandler.prototype = {
 	endCDATA:function() {
 	    this.cdata = false;
 	},
-	
+
 	startDTD:function(name, publicId, systemId) {
 		var impl = this.document.implementation;
 	    if (impl && impl.createDocumentType) {
@@ -32097,14 +32097,14 @@ NodeList.prototype = {
 	 * The number of nodes in the list. The range of valid child node indices is 0 to length-1 inclusive.
 	 * @standard level1
 	 */
-	length:0, 
+	length:0,
 	/**
 	 * Returns the indexth item in the collection. If index is greater than or equal to the number of nodes in the list, this returns null.
 	 * @standard level1
-	 * @param index  unsigned long 
+	 * @param index  unsigned long
 	 *   Index into the collection.
 	 * @return Node
-	 * 	The node at the indexth position in the NodeList, or null if that is not a valid index. 
+	 * 	The node at the indexth position in the NodeList, or null if that is not a valid index.
 	 */
 	item: function(index) {
 		return this[index] || null;
@@ -32132,10 +32132,10 @@ LiveNodeList.prototype.item = function(i){
 
 _extends(LiveNodeList,NodeList);
 /**
- * 
+ *
  * Objects implementing the NamedNodeMap interface are used to represent collections of nodes that can be accessed by name. Note that NamedNodeMap does not inherit from NodeList; NamedNodeMaps are not maintained in any particular order. Objects contained in an object implementing NamedNodeMap may also be accessed by an ordinal index, but this is simply to allow convenient enumeration of the contents of a NamedNodeMap, and does not imply that the DOM specifies an order to these Nodes.
  * NamedNodeMap objects in the DOM are live.
- * used for attributes or DocumentType entities 
+ * used for attributes or DocumentType entities
  */
 function NamedNodeMap() {
 };
@@ -32221,10 +32221,10 @@ NamedNodeMap.prototype = {
 		var attr = this.getNamedItem(key);
 		_removeNamedNode(this._ownerElement,this,attr);
 		return attr;
-		
-		
+
+
 	},// raises: NOT_FOUND_ERR,NO_MODIFICATION_ALLOWED_ERR
-	
+
 	//for level2
 	removeNamedItemNS:function(namespaceURI,localName){
 		var attr = this.getNamedItemNS(namespaceURI,localName);
@@ -32287,7 +32287,7 @@ DOMImplementation.prototype = {
 		node.systemId = systemId;
 		// Introduced in DOM Level 2:
 		//readonly attribute DOMString        internalSubset;
-		
+
 		//TODO:..
 		//  readonly attribute NamedNodeMap     entities;
 		//  readonly attribute NamedNodeMap     notations;
@@ -32317,10 +32317,10 @@ Node.prototype = {
 	prefix : null,
 	localName : null,
 	// Modified in DOM Level 2:
-	insertBefore:function(newChild, refChild){//raises 
+	insertBefore:function(newChild, refChild){//raises
 		return _insertBefore(this,newChild,refChild);
 	},
-	replaceChild:function(newChild, oldChild){//raises 
+	replaceChild:function(newChild, oldChild){//raises
 		this.insertBefore(newChild,oldChild);
 		if(oldChild){
 			this.removeChild(oldChild);
@@ -32469,7 +32469,7 @@ function _onUpdateChild(doc,el,newChild){
 /**
  * attributes;
  * children;
- * 
+ *
  * writeable properties:
  * nodeValue,Attr:value,CharacterData:data
  * prefix
@@ -32511,8 +32511,8 @@ function _insertBefore(parentNode,newChild,nextChild){
 
 	newFirst.previousSibling = pre;
 	newLast.nextSibling = nextChild;
-	
-	
+
+
 	if(pre){
 		pre.nextSibling = newFirst;
 	}else{
@@ -32561,8 +32561,8 @@ Document.prototype = {
 	doctype :  null,
 	documentElement :  null,
 	_inc : 1,
-	
-	insertBefore :  function(newChild, refChild){//raises 
+
+	insertBefore :  function(newChild, refChild){//raises
 		if(newChild.nodeType == DOCUMENT_FRAGMENT_NODE){
 			var child = newChild.firstChild;
 			while(child){
@@ -32575,7 +32575,7 @@ Document.prototype = {
 		if(this.documentElement == null && newChild.nodeType == 1){
 			this.documentElement = newChild;
 		}
-		
+
 		return _insertBefore(this,newChild,refChild),(newChild.ownerDocument = this),newChild;
 	},
 	removeChild :  function(oldChild){
@@ -32601,7 +32601,7 @@ Document.prototype = {
 		})
 		return rtv;
 	},
-	
+
 	//document factory method:
 	createElement :	function(tagName){
 		var node = new Element();
@@ -32725,7 +32725,7 @@ Element.prototype = {
 		var attr = this.getAttributeNode(name)
 		attr && this.removeAttributeNode(attr);
 	},
-	
+
 	//four real opeartion method
 	appendChild:function(newChild){
 		if(newChild.nodeType === DOCUMENT_FRAGMENT_NODE){
@@ -32748,7 +32748,7 @@ Element.prototype = {
 		var old = this.getAttributeNodeNS(namespaceURI, localName);
 		old && this.removeAttributeNode(old);
 	},
-	
+
 	hasAttributeNS : function(namespaceURI, localName){
 		return this.getAttributeNodeNS(namespaceURI, localName)!=null;
 	},
@@ -32764,7 +32764,7 @@ Element.prototype = {
 	getAttributeNodeNS : function(namespaceURI, localName){
 		return this.attributes.getNamedItemNS(namespaceURI, localName);
 	},
-	
+
 	getElementsByTagName : function(tagName){
 		return new LiveNodeList(this,function(base){
 			var ls = [];
@@ -32813,7 +32813,7 @@ CharacterData.prototype = {
 	},
 	insertData: function(offset,text) {
 		this.replaceData(offset,0,text);
-	
+
 	},
 	appendChild:function(newChild){
 		//if(!(newChild instanceof CharacterData)){
@@ -33105,7 +33105,7 @@ try{
 				}
 			}
 		})
-		
+
 		function getTextContent(node){
 			switch(node.nodeType){
 			case 1:
@@ -33149,7 +33149,7 @@ var tagNamePattern = new RegExp('^'+nameStartChar.source+nameChar.source+'*(?:\:
 //S_TAG,	S_ATTR,	S_EQ,	S_V
 //S_ATTR_S,	S_E,	S_S,	S_C
 var S_TAG = 0;//tag name offerring
-var S_ATTR = 1;//attr name offerring 
+var S_ATTR = 1;//attr name offerring
 var S_ATTR_S=2;//attr name end and space offer
 var S_EQ = 3;//=space?
 var S_V = 4;//attr value(no quot value only)
@@ -33158,7 +33158,7 @@ var S_S = 6;//(attr value end || tag end ) && (space offer)
 var S_C = 7;//closed el<el />
 
 function XMLReader(){
-	
+
 }
 
 XMLReader.prototype = {
@@ -33188,7 +33188,7 @@ function parse(source,defaultNSMapCopy,entityMap,domBuilder,errorHandler){
 	function entityReplacer(a){
 		var k = a.slice(1,-1);
 		if(k in entityMap){
-			return entityMap[k]; 
+			return entityMap[k];
 		}else if(k.charAt(0) === '#'){
 			return fixedFromCharCode(parseInt(k.substr(1).replace('x','0x')))
 		}else{
@@ -33215,7 +33215,7 @@ function parse(source,defaultNSMapCopy,entityMap,domBuilder,errorHandler){
 	var endPos = 0;
 	var linePattern = /.+(?:\r\n?|\n)|.*$/g
 	var locator = domBuilder.locator;
-	
+
 	var parseStack = [{currentNSMap:defaultNSMapCopy}]
 	var closeMap = {};
 	var start = 0;
@@ -33239,7 +33239,7 @@ function parse(source,defaultNSMapCopy,entityMap,domBuilder,errorHandler){
 			var tagName = source.substring(i+2,end);
 			var config = parseStack.pop();
 			var localNSMap = config.localNSMap;
-			
+
 	        if(config.tagName != tagName){
 	            errorHandler.fatalError("end tag name: "+tagName+' is not match the current start tagName:'+config.tagName );
 	        }
@@ -33263,9 +33263,9 @@ function parse(source,defaultNSMapCopy,entityMap,domBuilder,errorHandler){
 		default:
 			try{
 				locator&&position(i);
-				
+
 				var el = new ElementAttributes();
-				
+
 				//elStartEnd
 				var end = parseElementStartPart(source,i,el,entityReplacer,errorHandler);
 				var len = el.length;
@@ -33286,8 +33286,8 @@ function parse(source,defaultNSMapCopy,entityMap,domBuilder,errorHandler){
 					}
 				}
 				appendElement(el,domBuilder,parseStack);
-				
-				
+
+
 				if(el.uri === 'http://www.w3.org/1999/xhtml' && !el.closed){
 					end = parseHtmlSpecialContent(source,end,el.tagName,entityReplacer,domBuilder)
 				}else{
@@ -33311,7 +33311,7 @@ function copyLocator(f,t){
 	t.lineNumber = f.lineNumber;
 	t.columnNumber = f.columnNumber;
 	return t;
-	
+
 }
 
 /**
@@ -33499,7 +33499,7 @@ function appendElement(el,domBuilder,parseStack){
 		}
 		//can not set prefix,because prefix !== ''
 		a.localName = localName ;
-		//prefix == null for no ns prefix attribute 
+		//prefix == null for no ns prefix attribute
 		if(nsPrefix !== false){//hack!!
 			if(localNSMap == null){
 				localNSMap = {}
@@ -33509,7 +33509,7 @@ function appendElement(el,domBuilder,parseStack){
 			}
 			currentNSMap[nsPrefix] = localNSMap[nsPrefix] = value;
 			a.uri = 'http://www.w3.org/2000/xmlns/'
-			domBuilder.startPrefixMapping(nsPrefix, value) 
+			domBuilder.startPrefixMapping(nsPrefix, value)
 		}
 	}
 	var i = el.length;
@@ -33521,7 +33521,7 @@ function appendElement(el,domBuilder,parseStack){
 				a.uri = 'http://www.w3.org/XML/1998/namespace';
 			}if(prefix !== 'xmlns'){
 				a.uri = currentNSMap[prefix]
-				
+
 				//{console.log('###'+a.qName,domBuilder.locator.systemId+'',currentNSMap,a.uri)}
 			}
 		}
@@ -33543,7 +33543,7 @@ function appendElement(el,domBuilder,parseStack){
 		domBuilder.endElement(ns,localName,tagName);
 		if(localNSMap){
 			for(prefix in localNSMap){
-				domBuilder.endPrefixMapping(prefix) 
+				domBuilder.endPrefixMapping(prefix)
 			}
 		}
 	}else{
@@ -33569,7 +33569,7 @@ function parseHtmlSpecialContent(source,elStartEnd,tagName,entityReplacer,domBui
 				domBuilder.characters(text,0,text.length);
 				return elEndStart;
 			//}
-			
+
 		}
 	}
 	return elStartEnd+1;
@@ -33582,7 +33582,7 @@ function fixSelfClosed(source,elStartEnd,tagName,closeMap){
 		pos = closeMap[tagName] = source.lastIndexOf('</'+tagName+'>')
 	}
 	return pos<elStartEnd;
-	//} 
+	//}
 }
 function _copy(source,target){
 	for(var n in source){target[n] = source[n]}
@@ -33610,11 +33610,11 @@ function parseDCC(source,start,domBuilder,errorHandler){//sure start with '<!'
 			var end = source.indexOf(']]>',start+9);
 			domBuilder.startCDATA();
 			domBuilder.characters(source,start+9,end-start-9);
-			domBuilder.endCDATA() 
+			domBuilder.endCDATA()
 			return end+3;
 		}
 		//<!DOCTYPE
-		//startDTD(java.lang.String name, java.lang.String publicId, java.lang.String systemId) 
+		//startDTD(java.lang.String name, java.lang.String publicId, java.lang.String systemId)
 		var matchs = split(source,start);
 		var len = matchs.length;
 		if(len>1 && /!doctype/i.test(matchs[0][0])){
@@ -33625,7 +33625,7 @@ function parseDCC(source,start,domBuilder,errorHandler){//sure start with '<!'
 			domBuilder.startDTD(name,pubid && pubid.replace(/^(['"])(.*?)\1$/,'$2'),
 					sysid && sysid.replace(/^(['"])(.*?)\1$/,'$2'));
 			domBuilder.endDTD();
-			
+
 			return lastMatch.index+lastMatch[0].length
 		}
 	}
@@ -33653,7 +33653,7 @@ function parseInstruction(source,start,domBuilder){
  * @param source
  */
 function ElementAttributes(source){
-	
+
 }
 ElementAttributes.prototype = {
 	setTagName:function(tagName){
@@ -33676,7 +33676,7 @@ ElementAttributes.prototype = {
 	getValue:function(i){return this[i].value}
 //	,getIndex:function(uri, localName)){
 //		if(localName){
-//			
+//
 //		}else{
 //			var qName = uri
 //		}
@@ -33871,10 +33871,10 @@ module.exports = mixin;
 },{"./lib/clownface.js":46,"./lib/inmemory-store.js":47,"./lib/jsonld-parser.js":48,"./lib/jsonld-serializer.js":49,"./lib/ldp-store.js":50,"./lib/microdata-parser.js":51,"./lib/ntriples-serializer.js":52,"./lib/promise.js":53,"./lib/rdfstore-store.js":54,"./lib/rdfxml-parser.js":55,"./lib/singlegraph-store.js":56,"./lib/sparql-store.js":57,"./lib/turtle-parser.js":58,"./lib/turtle-serializer.js":59,"./lib/utils":63,"./lib/utils-browser":61,"./lib/utils-node":62,"_process":85,"rdf-interfaces":68}],68:[function(require,module,exports){
 /**
  * ECMAScript-262 V5 Implementation of the Core RDF Interfaces
- * 
+ *
  *  - <http://www.w3.org/2010/02/rdfa/sources/rdf-interfaces/>
  *  - <http://github.org/webr3/rdf-interfaces/>
- *  
+ *
  * This is free and unencumbered software released into the public domain.
  * For more information, please refer to <http://unlicense.org/>
  */
@@ -33917,7 +33917,7 @@ rdf = (function() {
     }
     return out
   };
-  
+
   rdf.BlankNode = function() {
     return Object.defineProperties( {}, {
       interfaceName: { writable: false, configurable : false, enumerable: true, value: 'BlankNode' },
@@ -33943,7 +33943,7 @@ rdf = (function() {
     })
   };
   rdf.BlankNode.NEXTID = 0;
-  
+
   rdf.NamedNode = function(iri) {
     return Object.defineProperties( {}, {
       interfaceName: { writable: false, configurable : false, enumerable: true, value: 'NamedNode' },
@@ -33968,7 +33968,7 @@ rdf = (function() {
       h: { configurable : false, enumerable: false, get: function(){return this.nominalValue} }
     })
   };
-  
+
   rdf.Literal = function(value, language, datatype, nativ) {
     if(typeof language == "string" && language[0] == "@") language = language.slice(1);
     return Object.defineProperties( {}, {
@@ -34000,7 +34000,7 @@ rdf = (function() {
       h: { writable: false, configurable : false, enumerable: false, value: language + '|' + (datatype ? datatype.toString() : '') + '|' + value.toString() }
     })
   };
-  
+
   rdf.Triple = function(s,p,o) {
     return Object.defineProperties( {}, {
       subject: { writable: false, configurable : false, enumerable: true, value: s },
@@ -34017,7 +34017,7 @@ rdf = (function() {
       o: { configurable : false, enumerable: false, get: function() { return this.object } }
     })
   };
-  
+
   rdf.Graph = function(a) {
     return Object.defineProperties( {}, {
       _graph: { writable: true, configurable : false, enumerable: false, value: [] },
@@ -34042,7 +34042,7 @@ rdf = (function() {
       remove: { writable: false, configurable : false, enumerable: true, value: function(t) {
         this._spo[t.s.h] && this._spo[t.s.h][t.p.h] && this._spo[t.s.h][t.p.h][t.o.h] && (
           delete this._spo[t.s.h][t.p.h][t.o.h] &&
-          this._graph.splice(this._graph.indexOf(t),1)  
+          this._graph.splice(this._graph.indexOf(t),1)
         );
         return this;
       }},
@@ -34098,17 +34098,17 @@ rdf = (function() {
       }}
     }).addArray(a);
   };
-  
+
   rdf.TripleAction = function(test,action) {
     return Object.defineProperties( {}, {
       action: { writable: true, configurable : false, enumerable: true, value: action },
       test: { writable: true, configurable : false, enumerable: true, value: test },
       run: { writable: false, configurable : false, enumerable: true, value: function(t,g) {
         if(this.test(t)) this.action(t,g);
-      }}    
+      }}
     })
   };
-  
+
   rdf.PrefixMap = function(i) {
     return Object.defineProperties( {} , {
       resolve: { writable: false, configurable : false, enumerable: true, value: function(curie) {
@@ -34135,7 +34135,7 @@ rdf = (function() {
       }}
     }).addAll(i);
   };
-  
+
   rdf.TermMap = function(i) {
     return Object.defineProperties( {} , {
       resolve: { writable: false, configurable : false, enumerable: true, value: function(term) {
@@ -34159,7 +34159,7 @@ rdf = (function() {
       }}
     }).addAll(i);
   }
-  
+
   rdf.Profile = function(i) {
     return Object.defineProperties( {} , {
       prefixes: { writable: false, configurable : false, enumerable: true, value: new rdf.PrefixMap },
@@ -34187,7 +34187,7 @@ rdf = (function() {
       }}
     }).importProfile(i);
   };
-  
+
   rdf.RDFEnvironment = function() {
     var rp = {terms:{},prefixes:{
       owl: "http://www.w3.org/2002/07/owl#",
@@ -34274,7 +34274,7 @@ rdf = (function() {
   return rdf = _;
 })();
 
-if(typeof module != "undefined") module.exports = rdf; 
+if(typeof module != "undefined") module.exports = rdf;
 
 
 },{}],69:[function(require,module,exports){
@@ -34336,19 +34336,19 @@ window.MyStore = function (options) {
     this.context        = options.context;
     this.models         = options.models;
     if('template' in options) this.mainTemplate = Handlebars.compile(options.template);
-    
-    var fieldPartial = "<input type='text' placeholder='{{title}}' name='{{name}}' /><br/>";
+
+    var fieldPartial = "<label>{{title}}</label><input id='{{name}}' type='text' placeholder='{{title}}' name='{{name}}' value='{{fieldValue}}' /><br/>";
     var formTemplate = Handlebars.compile(
         "<form data-container='{{container}}' onSubmit='return store.handleSubmit(event);'> \
             {{#each fields}}{{> LDPField }}{{/each}} \
             <input type='submit' value='Post' /> \
         </form>");
-    
+
     Handlebars.registerPartial("LDPField", fieldPartial);
     if('partials' in options)
         for(var partialName in options.partials)
             Handlebars.registerPartial(partialName, options.partials[partialName]);
-    
+
     Handlebars.registerHelper("ldpeach", function(array, tagName, options) {
         var id = "ldp-"+Math.round(new Date().getTime() + (Math.random() * 10000));
         var objects = Array.isArray(array) ? array : [array];
@@ -34361,15 +34361,15 @@ window.MyStore = function (options) {
         }.bind(this));
         return '<'+ tagName +' id="'+id+'"></' + tagName + '>';
     }.bind(this));
-    
+
     Handlebars.registerHelper('ldplist', function(obj) {
         return obj['ldp:contains'];
     });
-    
+
     Handlebars.registerHelper('form', function(context, options) {
         return formTemplate(this.models[context]);
     }.bind(this));
-    
+
     var storeOptions = {};
     if ('corsProxy' in options)
         storeOptions.request = rdf.corsProxyRequest.bind(rdf, options.corsProxy);
@@ -34451,13 +34451,13 @@ window.MyStore = function (options) {
             obj[field.name] = field.value; return obj
         }, {});
     };
-    
+
     this.handleSubmit = function handleSubmit(event) {
         this.save(this.reduceForm(event.target), event.target.dataset.container);
         event.stopPropagation();
         return false;
     }
-    
+
     /**
      * Fetches a LDP resource of the given IRI
      * If no context given, takes the default one
@@ -34484,23 +34484,23 @@ window.MyStore = function (options) {
                 return JsonLdUtils.compact(frame, context);
             });
     };
-    
+
     this.createContainer = function createContainer(containerName, parentIri) {
         var container = {'@type': 'ldp:BasicContainer'};
         this.add({'Slug': containerName, 'Link': '<http://www.w3.org/ns/ldp#BasicContainer>; rel="type"'}, this.getIri(parentIri), container);
     }
-    
+
     this.save = function save(object, container) {
         this.resetId(object);
         if(!('@context' in object))
             object['@context'] = this.context;
-        
+
         if('@id' in object)
             this.put(object);
         else
             this.add(this.getIri(container), object);
     }
-    
+
     this.list = function list(containerIri) {
         return this.get(containerIri).then(function(container) {
             var objectList = container['ldp:contains'] || [];
@@ -34509,7 +34509,7 @@ window.MyStore = function (options) {
             return objectList;
         });
     }
-    
+
     this.move = function move(containerId) {
         this.list(containerId).then(function(objects) {
             objects.forEach(function(object) {
@@ -34520,22 +34520,34 @@ window.MyStore = function (options) {
             }.bind(this));
         }.bind(this));
     }
-    
+
     this.getIri = function getIri(iri) {
         if(!iri) return this.container;
         if(iri.startsWith("http://")||iri.startsWith("https://")) return iri;
         return this.container + iri;
     }
-    
-    this.render = function render(div, objectIri, template, context) {
+
+    this.render = function render(div, objectIri, template, context, modelName, prefix) {
         var objectIri = this.getIri(objectIri);
         var template = template ? Handlebars.compile(template) : this.mainTemplate;
         var context = context || this.context;
+        var fields = modelName ? this.models[modelName].fields : null;
+
         this.get(objectIri).then(function(object) {
+            if (fields) {
+              fields.forEach( function(fields) {
+                var propertyName = fields.name;
+                if (prefix) {
+                  propertyName = propertyName.replace(prefix, '');
+                }
+
+                fields.fieldValue = object[propertyName];
+              });
+            }
             $(div).html(template({object: object}));
         });
     }
-    
+
     /**
      * Adds one or more JSON-LD objects to the given IRI
      *
@@ -34545,7 +34557,7 @@ window.MyStore = function (options) {
      */
     this.add = function () {
         var param = parseIriObjectsArgs(arguments);
-        
+
         return this.objectsToGraph("", param.objects)
             .then(function (graph) { return store.add(documentIri(param.iri), graph, {'method': 'POST', 'headers': param.headers}); }.bind(this))
             .then(function (added, error) {
@@ -34561,7 +34573,7 @@ window.MyStore = function (options) {
                     resolve();
                 });
             });
-    };        
+    };
     /**
      * Adds one or more JSON-LD objects to the given IRI
      *
@@ -34571,7 +34583,7 @@ window.MyStore = function (options) {
      */
     this.put = function () {
         var param = parseIriObjectsArgs(arguments);
-        
+
         return this.objectsToGraph(param.iri, param.objects)
             .then(function (graph) { graph.etag=this.etags[param.iri];return store.add(documentIri(param.iri), graph, {'useEtag': true}); }.bind(this))
             .then(function (added, error) {
@@ -36652,7 +36664,7 @@ http.request = function (params, cb) {
         params.host = params.host.split(':')[0];
     }
     if (!params.port) params.port = params.protocol == 'https:' ? 443 : 80;
-    
+
     var req = new Request(new xhrHttp, params);
     if (cb) req.on('response', cb);
     return req;
@@ -36773,23 +36785,23 @@ var Request = module.exports = function (xhr, params) {
     self.writable = true;
     self.xhr = xhr;
     self.body = [];
-    
+
     self.uri = (params.protocol || 'http:') + '//'
         + params.host
         + (params.port ? ':' + params.port : '')
         + (params.path || '/')
     ;
-    
+
     if (typeof params.withCredentials === 'undefined') {
         params.withCredentials = true;
     }
 
     try { xhr.withCredentials = params.withCredentials }
     catch (e) {}
-    
+
     if (params.responseType) try { xhr.responseType = params.responseType }
     catch (e) {}
-    
+
     xhr.open(
         params.method || 'GET',
         self.uri,
@@ -36801,7 +36813,7 @@ var Request = module.exports = function (xhr, params) {
     };
 
     self._headers = {};
-    
+
     if (params.headers) {
         var keys = objectKeys(params.headers);
         for (var i = 0; i < keys.length; i++) {
@@ -36811,7 +36823,7 @@ var Request = module.exports = function (xhr, params) {
             self.setHeader(key, value);
         }
     }
-    
+
     if (params.auth) {
         //basic auth
         this.setHeader('Authorization', 'Basic ' + Base64.btoa(params.auth));
@@ -36821,7 +36833,7 @@ var Request = module.exports = function (xhr, params) {
     res.on('close', function () {
         self.emit('close');
     });
-    
+
     res.on('ready', function () {
         self.emit('response', res);
     });
@@ -36829,7 +36841,7 @@ var Request = module.exports = function (xhr, params) {
     res.on('error', function (err) {
         self.emit('error', err);
     });
-    
+
     xhr.onreadystatechange = function () {
         // Fix for IE9 bug
         // SCRIPT575: Could not complete the operation due to error c00c023f
@@ -36898,7 +36910,7 @@ Request.prototype.end = function (s) {
         }
         var body = new(this.body[0].constructor)(len);
         var k = 0;
-        
+
         for (var i = 0; i < this.body.length; i++) {
             var b = this.body[i];
             for (var j = 0; j < b.length; j++) {
@@ -36995,13 +37007,13 @@ function parseHeaders (res) {
     for (var i = 0; i < lines.length; i++) {
         var line = lines[i];
         if (line === '') continue;
-        
+
         var m = line.match(/^([^:]+):\s*(.*)/);
         if (m) {
             var key = m[1].toLowerCase(), value = m[2];
-            
+
             if (headers[key] !== undefined) {
-            
+
                 if (isArray(headers[key])) {
                     headers[key].push(value);
                 }
@@ -37040,7 +37052,7 @@ Response.prototype.handle = function (res) {
         catch (err) {
             capable.status2 = false;
         }
-        
+
         if (capable.status2) {
             this.emit('ready');
         }
@@ -37054,7 +37066,7 @@ Response.prototype.handle = function (res) {
             }
         }
         catch (err) {}
-        
+
         try {
             this._emitData(res);
         }
@@ -37068,12 +37080,12 @@ Response.prototype.handle = function (res) {
             this.emit('ready');
         }
         this._emitData(res);
-        
+
         if (res.error) {
             this.emit('error', this.getResponse(res));
         }
         else this.emit('end');
-        
+
         this.emit('close');
     }
 };
