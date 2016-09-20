@@ -59,28 +59,41 @@ JsonLdUtils.fromRDF = JsonLdUtils.funcTemplate(jsonld.fromRDF);
      if ('template' in options) this.mainTemplate = options.template;
 
      // The partial definition for displaying a form field
-     var fieldPartial = "<label for='{{name}}'>{{title}}</label> \
+     var fieldPartial = "{{#if data-property}}<label for='{{data-property}}'>{{label}}</label> {{/if}}\
+                         {{#if object-property}}<label for='{{object-property}}'>{{label}}</label>{{/if}} \
+                         {{#if name}}<label for='{{name}}'>{{title}}</label>{{/if}} \
                          {{#ifCond type 'textarea'}} \
-                           <textarea id='{{name}}' name='{{name}}' rows='10'>{{#if fieldValue}}{{fieldValue}}{{/if}}</textarea><br/>\
+                           {{#if name}}<textarea id='{{name}}' name='{{name}}' rows='10'>{{#if fieldValue}}{{fieldValue}}{{/if}}</textarea><br/>{{/if}}\
+                           {{#if data-property}}<textarea id='{{data-property}}' name='{{data-property}}' rows='10'>{{#if fieldValue}}{{fieldValue}}{{/if}}</textarea><br/>{{/if}}\
                          {{else}}\
                            {{#ifCond type 'checkbox'}} \
-                             <input type='checkbox' name='{{name}}' id='{{name}}'/>\
+                             {{#if name}}<input type='checkbox' name='{{name}}' id='{{name}}'/>{{/if}}\
+                             {{#if data-property}}<input type='checkbox' name='{{data-property}}' id='{{data-property}}'/>{{/if}}\
                            {{else}}\
                              {{#ifCond type 'select'}} \
-                               <select id='{{name}}' name='{{name}}'> \
+                               {{#if name}}<select id='{{name}}' name='{{name}}'>{{/if}}\
+                               {{#if data-property}}<select id='{{data-property}}' name='{{data-property}}'>{{/if}}\
                                  {{#each options}}{{> LDPOptions fieldValue='{{fieldValue}}' }}{{/each}} \
                              {{else}} \
                                {{#ifCond type 'date'}} \
-                                <input id='{{name}}' type='date' placeholder='YYYY-MM-DD' name='{{name}}' value='{{fieldValue}}' />\
+                                 {{#if name}}<input id='{{name}}' type='date' placeholder='YYYY-MM-DD' name='{{name}}' value='{{fieldValue}}' />{{/if}}\
+                                 {{#if data-property}}<input id='{{data-property}}' type='date' placeholder='YYYY-MM-DD' name='{{data-property}}' value='{{fieldValue}}' />{{/if}}\
                                {{else}} \
                                  {{#ifCond type 'url'}} \
-                                  <input id='{{name}}' type='url' placeholder='http://www.example.com' name='{{name}}' value='{{fieldValue}}' />\
+                                   {{#if name}}<input id='{{name}}' type='url' placeholder='http://www.example.com' name='{{name}}' value='{{fieldValue}}' />{{/if}}\
+                                   {{#if data-property}}<input id='{{data-property}}' type='url' placeholder='http://www.example.com' name='{{data-property}}' value='{{fieldValue}}' />{{/if}}\
                                  {{else}} \
                                    {{#ifCond type 'email'}} \
-                                    <input id='{{name}}' type='email' placeholder='contact@example.com' name='{{name}}' value='{{fieldValue}}' />\
+                                     {{#if name}}<input id='{{name}}' type='email' placeholder='contact@example.com' name='{{name}}' value='{{fieldValue}}' />{{/if}}\
+                                     {{#if data-property}}<input id='{{data-property}}' type='email' placeholder='contact@example.com' name='{{data-property}}' value='{{fieldValue}}' />{{/if}}\
                                    {{else}} \
-                                    <input id='{{name}}' type='text' placeholder='{{title}}' name='{{name}}' value='{{fieldValue}}' />\
-                                   {{/ifCond}}\
+                                     {{#ifCond type 'resource'}} \
+                                     <input id='{{object-property}}' type='url' placeholder='http://www.example.com/ldp/resource/my-resource/' name='{{object-property}}' value='{{fieldValue}}' />\
+                                      {{else}} \
+                                        {{#if name}}<input id='{{name}}' type='text' placeholder='{{title}}' name='{{name}}' value='{{fieldValue}}' />{{/if}}\
+                                        {{#if data-property}}<input id='{{data-property}}' type='text' placeholder='{{label}}' name='{{data-property}}' value='{{fieldValue}}' />{{/if}}\
+                                      {{/ifCond}}\
+                                    {{/ifCond}}\
                                  {{/ifCond}}\
                                {{/ifCond}}\
                              {{/ifCond}}\
@@ -143,6 +156,12 @@ JsonLdUtils.fromRDF = JsonLdUtils.funcTemplate(jsonld.fromRDF);
        } else {
          return options.inverse(this);
        }
+     });
+
+     Handlebars.registerHelper('if', function(conditional, options) {
+      if(conditional) {
+        return options.fn(this);
+      }
      });
 
      Handlebars.registerHelper('form', function(context, options) {
