@@ -336,7 +336,12 @@ JsonLdUtils.fromRDF = JsonLdUtils.funcTemplate(jsonld.fromRDF);
          this.get(objectIri).then(function(object) {
              if (fields) {
                fields.forEach( function(fields) {
-                 var propertyName = fields.name;
+                 if (fields.name) {
+                   var propertyName = fields.name;
+                 } else if (fields['data-property']) {
+                   var propertyName = fields['data-property'];
+                 }
+
                  if (prefix) {
                    propertyName = propertyName.replace(prefix, '');
                  }
