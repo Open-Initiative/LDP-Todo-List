@@ -339,6 +339,8 @@ JsonLdUtils.fromRDF = JsonLdUtils.funcTemplate(jsonld.fromRDF);
                    var propertyName = fields.name;
                  } else if (fields['data-property']) {
                    var propertyName = fields['data-property'];
+                 }  else if (fields['object-property']) {
+                   var propertyName = fields['object-property'];
                  }
 
                  if (prefix) {
