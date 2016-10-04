@@ -59,47 +59,91 @@ JsonLdUtils.fromRDF = JsonLdUtils.funcTemplate(jsonld.fromRDF);
 
      if ('template' in options) this.mainTemplate = options.template;
 
+     Handlebars.registerHelper("include", function(options) {
+         var context = {},
+             mergeContext = function(obj) {
+                 for(var k in obj)context[k]=obj[k];
+             };
+         mergeContext(this);
+         mergeContext(options.hash);
+         console.log(context);
+         return options.fn(context);
+     });
+
      // The partial definition for displaying a form field
-     var fieldPartial = "{{#if data-property}}<label for='{{data-property}}'>{{label}}</label> {{/if}}\
-                         {{#if object-property}}<label for='{{object-property}}'>{{label}}</label>{{/if}} \
-                         {{#if name}}<label for='{{name}}'>{{title}}</label>{{/if}} \
-                         {{#ifCond type 'textarea'}} \
-                           {{#if name}}<textarea id='{{name}}' name='{{name}}' rows='10'>{{#if fieldValue}}{{fieldValue}}{{/if}}</textarea><br/>{{/if}}\
-                           {{#if data-property}}<textarea id='{{data-property}}' name='{{data-property}}' rows='10'>{{#if fieldValue}}{{fieldValue}}{{/if}}</textarea><br/>{{/if}}\
+     var fieldPartialTest = "{{#if '@id'}}{{#if name}}<input id='{{name}}' type='text' name='{{name}}' value='{{'@id'}}' />{{/if}}{{/if}}";
+     Handlebars.registerPartial("LDPFieldTest", fieldPartialTest);
+
+     // The partial definition for displaying a form field handling array values, with possibility to add a field dynamically
+     var fieldDisplayPartial = "{{#if name}}<label for='{{name}}'>{{label}}</label><button id='add-field-{{name}}' onclick='return store.addField(event);'>+</button>{{/if}}\
+                              <div id='field-{{name}}'>\
+                                {{#if fields}}\
+                                  {{#each fields}}\
+                                    {{#include parent=..}}\
+                                      {{> LDPFieldTest}}\
+                                    {{/include}}\
+                                  {{/each}}\
+                                {{else}} \
+                                  <input id='{{name}}' type='text' placeholder='{{title}}' name='{{name}}' />\
+                                {{/if}}\
+                              </div>";
+     Handlebars.registerPartial("ArrayFieldDisplay", fieldDisplayPartial);
+
+     this.addField = function addField(event) {
+        console.log('Event', event);
+        console.log(event.target.id);
+        var target_id = event.target.id.substring('add-'.length);
+        console.log(target_id);
+
+        var target_div = document.getElementById(target_id);
+        console.log(target_div);
+        var child_count = target_div.childElementCount + 1;
+        var input = document.createElement('input');
+        input.id = target_id.substring('field-'.length) + child_count;
+        input.name = target_id.substring('field-'.length) + child_count;
+        input.type = "text";
+        console.log(input);
+        target_div.appendChild(input);
+        //  this.save(this.reduceForm(event.target), event.target.dataset.container);
+        event.stopPropagation();
+        return false;
+     }
+
+     // The partial definition for displaying a form field
+     var fieldPartial = "{{#ifCond multiple 'true'}}{{> ArrayFieldDisplay }}\
                          {{else}}\
-                           {{#ifCond type 'checkbox'}} \
-                             {{#if name}}<input type='checkbox' name='{{name}}' id='{{name}}'/>{{/if}}\
-                             {{#if data-property}}<input type='checkbox' name='{{data-property}}' id='{{data-property}}'/>{{/if}}\
+                           {{#if name}}<label for='{{name}}'>{{label}}</label>{{/if}} \
+                           {{#ifCond type 'textarea'}} \
+                             {{#if name}}<textarea id='{{name}}' name='{{name}}' rows='10'>{{#if fieldValue}}{{fieldValue}}{{/if}}</textarea><br/>{{/if}}\
                            {{else}}\
-                             {{#ifCond type 'select'}} \
-                               {{#if name}}<select id='{{name}}' name='{{name}}'>{{/if}}\
-                               {{#if data-property}}<select id='{{data-property}}' name='{{data-property}}'>{{/if}}\
-                                 {{#each options}}{{> LDPOptions fieldValue='{{fieldValue}}' }}{{/each}} \
-                             {{else}} \
-                               {{#ifCond type 'date'}} \
-                                 {{#if name}}<input id='{{name}}' type='date' placeholder='YYYY-MM-DD' name='{{name}}' value='{{fieldValue}}' />{{/if}}\
-                                 {{#if data-property}}<input id='{{data-property}}' type='date' placeholder='YYYY-MM-DD' name='{{data-property}}' value='{{fieldValue}}' />{{/if}}\
+                             {{#ifCond type 'checkbox'}} \
+                               {{#if name}}<input type='checkbox' name='{{name}}' id='{{name}}'/>{{/if}}\
+                             {{else}}\
+                               {{#ifCond type 'select'}} \
+                                 {{#if name}}<select id='{{name}}' name='{{name}}'>{{/if}}\
+                                   {{#each options}}{{> LDPOptions fieldValue='{{fieldValue}}' }}{{/each}} \
                                {{else}} \
-                                 {{#ifCond type 'url'}} \
-                                   {{#if name}}<input id='{{name}}' type='url' placeholder='http://www.example.com' name='{{name}}' value='{{fieldValue}}' />{{/if}}\
-                                   {{#if data-property}}<input id='{{data-property}}' type='url' placeholder='http://www.example.com' name='{{data-property}}' value='{{fieldValue}}' />{{/if}}\
+                                 {{#ifCond type 'date'}} \
+                                   {{#if name}}<input id='{{name}}' type='date' placeholder='YYYY-MM-DD' name='{{name}}' value='{{fieldValue}}' />{{/if}}\
                                  {{else}} \
-                                   {{#ifCond type 'email'}} \
-                                     {{#if name}}<input id='{{name}}' type='email' placeholder='contact@example.com' name='{{name}}' value='{{fieldValue}}' />{{/if}}\
-                                     {{#if data-property}}<input id='{{data-property}}' type='email' placeholder='contact@example.com' name='{{data-property}}' value='{{fieldValue}}' />{{/if}}\
+                                   {{#ifCond type 'url'}} \
+                                     {{#if name}}<input id='{{name}}' type='url' placeholder='http://www.example.com' name='{{name}}' value='{{fieldValue}}' />{{/if}}\
                                    {{else}} \
-                                     {{#ifCond type 'resource'}} \
-                                     <input id='{{object-property}}' type='url' placeholder='http://www.example.com/ldp/resource/my-resource/' name='{{object-property}}' value='{{fieldValue}}' />\
-                                      {{else}} \
-                                        {{#if name}}<input id='{{name}}' type='text' placeholder='{{title}}' name='{{name}}' value='{{fieldValue}}' />{{/if}}\
-                                        {{#if data-property}}<input id='{{data-property}}' type='text' placeholder='{{label}}' name='{{data-property}}' value='{{fieldValue}}' />{{/if}}\
+                                     {{#ifCond type 'email'}} \
+                                       {{#if name}}<input id='{{name}}' type='email' placeholder='contact@example.com' name='{{name}}' value='{{fieldValue}}' />{{/if}}\
+                                     {{else}} \
+                                       {{#ifCond type 'resource'}} \
+                                       <input id='{{name}}' type='url' placeholder='http://www.example.com/ldp/resource/my-resource/' name='{{name}}' value='{{fieldValue}}' />\
+                                        {{else}} \
+                                          {{#if name}}<input id='{{name}}' type='text' placeholder='{{title}}' name='{{name}}' value='{{fieldValue}}' />{{/if}}\
+                                        {{/ifCond}}\
                                       {{/ifCond}}\
-                                    {{/ifCond}}\
+                                   {{/ifCond}}\
                                  {{/ifCond}}\
                                {{/ifCond}}\
                              {{/ifCond}}\
                            {{/ifCond}}\
-                         {{/ifCond}}";
+                          {{/ifCond}}";
      Handlebars.registerPartial("LDPField", fieldPartial);
 
      // The partial definition for displaying an option field inside a select
@@ -331,27 +375,44 @@ JsonLdUtils.fromRDF = JsonLdUtils.funcTemplate(jsonld.fromRDF);
          var template = template ? template : this.mainTemplate;
          var context = context || this.context;
          var fields = modelName ? this.models[modelName].fields : null;
+         console.log(fields);
          var instance = this;
 
          this.get(objectIri).then(function(object) {
              if (fields) {
-               fields.forEach( function(fields) {
-                 if (fields.name) {
-                   var propertyName = fields.name;
-                 } else if (fields['data-property']) {
-                   var propertyName = fields['data-property'];
-                 }  else if (fields['object-property']) {
-                   var propertyName = fields['object-property'];
+               fields.forEach( function(field) {
+                 if (field.name) {
+                   var propertyName = field.name;
+                 } else if (field['data-property']) {
+                   field.name = field['data-property'];
+                 }  else if (field['object-property']) {
+                   field.name = field['object-property'];
                  }
 
                  if (prefix) {
                    propertyName = propertyName.replace(prefix, '');
                  }
 
-                 fields.fieldValue = object[propertyName];
+                 console.log('Object', object[field.name]);
+                 if ( field.multiple == "true" ) {
+                   console.log('I am a multiple field');
+                   if (object[field.name]) {
+                     console.log('I handle some values');
+                     if ( Array.isArray(object[field.name])) {
+                       field.fields = object[field.name];
+                     } else {
+                      field.fields = [ object[field.name] ];
+                     }
+                   } else {
+                     field.fields = new Array();
+                   }
+                 } else {
+                   field.fieldValue = object[field.name];
+                 }
+                 console.log('Field at the end', field);
                });
              }
-
+            console.log(fields);
             if (typeof(template) == 'string' && template.substring(0, 1) == '#') {
               var element = $(template);
               if (element && typeof element.attr('src') !== 'undefined') {
