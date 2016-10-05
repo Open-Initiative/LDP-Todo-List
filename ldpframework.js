@@ -59,29 +59,16 @@ JsonLdUtils.fromRDF = JsonLdUtils.funcTemplate(jsonld.fromRDF);
 
      if ('template' in options) this.mainTemplate = options.template;
 
-     Handlebars.registerHelper("include", function(options) {
-         var context = {},
-             mergeContext = function(obj) {
-                 for(var k in obj)context[k]=obj[k];
-             };
-         mergeContext(this);
-         mergeContext(options.hash);
-         console.log(context);
-         return options.fn(context);
-     });
-
      // The partial definition for displaying a form field
      var fieldPartialTest = "{{#if '@id'}}{{#if name}}<input id='{{name}}' type='text' name='{{name}}' value='{{'@id'}}' />{{/if}}{{/if}}";
      Handlebars.registerPartial("LDPFieldTest", fieldPartialTest);
 
      // The partial definition for displaying a form field handling array values, with possibility to add a field dynamically
-     var fieldDisplayPartial = "{{#if name}}<label for='{{name}}'>{{label}}</label><button id='add-field-{{name}}' onclick='return store.addField(event);'>+</button>{{/if}}\
+     var fieldDisplayPartial = "{{#if name}}<label for='{{name}}'>{{label}}</label><button class='button add-field-button' id='add-field-{{name}}' onclick='return store.addField(event);'>+</button>{{/if}}\
                               <div id='field-{{name}}'>\
                                 {{#if fields}}\
                                   {{#each fields}}\
-                                    {{#include parent=..}}\
-                                      {{> LDPFieldTest}}\
-                                    {{/include}}\
+                                    {{> LDPFieldTest}}\
                                   {{/each}}\
                                 {{else}} \
                                   <input id='{{name}}' type='text' placeholder='{{title}}' name='{{name}}' />\
@@ -90,19 +77,14 @@ JsonLdUtils.fromRDF = JsonLdUtils.funcTemplate(jsonld.fromRDF);
      Handlebars.registerPartial("ArrayFieldDisplay", fieldDisplayPartial);
 
      this.addField = function addField(event) {
-        console.log('Event', event);
-        console.log(event.target.id);
         var target_id = event.target.id.substring('add-'.length);
-        console.log(target_id);
 
         var target_div = document.getElementById(target_id);
-        console.log(target_div);
         var child_count = target_div.childElementCount + 1;
         var input = document.createElement('input');
         input.id = target_id.substring('field-'.length) + child_count;
         input.name = target_id.substring('field-'.length) + child_count;
         input.type = "text";
-        console.log(input);
         target_div.appendChild(input);
         //  this.save(this.reduceForm(event.target), event.target.dataset.container);
         event.stopPropagation();
@@ -375,7 +357,6 @@ JsonLdUtils.fromRDF = JsonLdUtils.funcTemplate(jsonld.fromRDF);
          var template = template ? template : this.mainTemplate;
          var context = context || this.context;
          var fields = modelName ? this.models[modelName].fields : null;
-         console.log(fields);
          var instance = this;
 
          this.get(objectIri).then(function(object) {
@@ -393,11 +374,8 @@ JsonLdUtils.fromRDF = JsonLdUtils.funcTemplate(jsonld.fromRDF);
                    propertyName = propertyName.replace(prefix, '');
                  }
 
-                 console.log('Object', object[field.name]);
                  if ( field.multiple == "true" ) {
-                   console.log('I am a multiple field');
                    if (object[field.name]) {
-                     console.log('I handle some values');
                      if ( Array.isArray(object[field.name])) {
                        field.fields = object[field.name];
                      } else {
@@ -409,10 +387,8 @@ JsonLdUtils.fromRDF = JsonLdUtils.funcTemplate(jsonld.fromRDF);
                  } else {
                    field.fieldValue = object[field.name];
                  }
-                 console.log('Field at the end', field);
                });
              }
-            console.log(fields);
             if (typeof(template) == 'string' && template.substring(0, 1) == '#') {
               var element = $(template);
               if (element && typeof element.attr('src') !== 'undefined') {
